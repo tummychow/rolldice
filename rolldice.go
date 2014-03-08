@@ -22,19 +22,19 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	if len(os.Args) < 3 {
-		fmt.Printf("Not enough arguments\n")
+		println("Not enough arguments")
 		return
 	}
 
 	n, err := strconv.Atoi(os.Args[1])
 	if err != nil || n < 0 {
-		fmt.Printf("First argument must be non-negative integer\n")
+		println("First argument must be non-negative integer")
 		return
 	}
 
 	f, err := strconv.Atoi(os.Args[2])
 	if err != nil || f <= 0 {
-		fmt.Printf("Second argument must be positive integer\n")
+		println("Second argument must be positive integer")
 		return
 	}
 
@@ -45,7 +45,7 @@ func main() {
 	if len(os.Args) > 3 {
 		s, err := strconv.Atoi(os.Args[3])
 		if err != nil {
-			fmt.Printf("Third argument must be integer\n")
+			println("Third argument must be integer")
 			return
 		}
 
