@@ -22,16 +22,16 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	if len(os.Args) < 3 {
-        println("  Usage:")
-        println("      rolldice <num> <faces> [modifier]")
-        println("  Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].\n")
+		println("  Usage:")
+		println("      rolldice <num> <faces> [modifier]")
+		println("  Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].\n")
 
-        println("  If [modifier] is not given, the dice are printed, one per line.")
-        println("  If [modifier] is given, the sum of all the dice, plus the modifier, is")
-        println("  printed. The individual rolls will not be printed.\n")
+		println("  If [modifier] is not given, the dice are printed, one per line.")
+		println("  If [modifier] is given, the sum of all the dice, plus the modifier, is")
+		println("  printed. The individual rolls will not be printed.\n")
 
 		println("  <num> must be a non-negative integer. <faces> must be a positive integer.")
-        println("  [modifier] must be an integer (can be any sign, or zero).")
+		println("  [modifier] must be an integer (can be any sign, or zero).")
 
 		os.Exit(1)
 	}
