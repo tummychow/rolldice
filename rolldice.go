@@ -57,13 +57,13 @@ func main() {
 			os.Exit(1)
 		}
 
-		for i := range dice {
-			s += dice[i]
+		for _, die := range dice {
+			s += die
 		}
 		fmt.Println(s)
 	} else {
-		for i := range dice {
-			fmt.Println(dice[i])
+		for _, die := range dice {
+			fmt.Println(die)
 		}
 	}
 }
