@@ -33,19 +33,19 @@ func main() {
 		println("  <num> must be a non-negative integer. <faces> must be a positive integer.")
         println("  [modifier] must be an integer (can be any sign, or zero).")
 
-		return
+		os.Exit(1)
 	}
 
 	n, err := strconv.Atoi(os.Args[1])
 	if err != nil || n < 0 {
 		println("<num> must be non-negative integer")
-		return
+		os.Exit(1)
 	}
 
 	f, err := strconv.Atoi(os.Args[2])
 	if err != nil || f <= 0 {
 		println("<faces> must be positive integer")
-		return
+		os.Exit(1)
 	}
 
 	dice := roll(n, f)
@@ -54,7 +54,7 @@ func main() {
 		s, err := strconv.Atoi(os.Args[3])
 		if err != nil {
 			println("[modifier] must be integer")
-			return
+			os.Exit(1)
 		}
 
 		for i := range dice {
