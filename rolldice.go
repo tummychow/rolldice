@@ -22,30 +22,38 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	if len(os.Args) < 3 {
-		println("Not enough arguments")
+        println("  Usage:")
+        println("      rolldice <num> <faces> [modifier]")
+        println("  Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].\n")
+
+        println("  If [modifier] is not given, the dice are printed, one per line.")
+        println("  If [modifier] is given, the sum of all the dice, plus the modifier, is")
+        println("  printed. The individual rolls will not be printed.\n")
+
+		println("  <num> must be a non-negative integer. <faces> must be a positive integer.")
+        println("  [modifier] must be an integer (can be any sign, or zero).")
+
 		return
 	}
 
 	n, err := strconv.Atoi(os.Args[1])
 	if err != nil || n < 0 {
-		println("First argument must be non-negative integer")
+		println("<num> must be non-negative integer")
 		return
 	}
 
 	f, err := strconv.Atoi(os.Args[2])
 	if err != nil || f <= 0 {
-		println("Second argument must be positive integer")
+		println("<faces> must be positive integer")
 		return
 	}
-
-	// fmt.Printf("Rolling %dd%d+%d\n", n, f, s)
 
 	dice := roll(n, f)
 
 	if len(os.Args) > 3 {
 		s, err := strconv.Atoi(os.Args[3])
 		if err != nil {
-			println("Third argument must be integer")
+			println("[modifier] must be integer")
 			return
 		}
 
