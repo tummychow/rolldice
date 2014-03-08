@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Roll rolls n dice with values in the range [1,d], and returns
+// Roll rolls n dice with faces in the range [1,d], and returns
 // their values in the order they were rolled.
 func roll(n, d int) []int {
 	dice := make([]int, n)
