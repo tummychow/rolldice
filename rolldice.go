@@ -52,10 +52,10 @@ func main() {
 		for i := range dice {
 			s += dice[i]
 		}
-		fmt.Printf("%d\n", s)
+		fmt.Println(s)
 	} else {
 		for i := range dice {
-			fmt.Printf("%d\n", dice[i])
+			fmt.Println(dice[i])
 		}
 	}
 }
