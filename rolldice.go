@@ -26,14 +26,14 @@ func roll(n, d int) []int {
 // If the string does not match the expected form, a non-nil error will be
 // returned.
 func dString(d string) ([]string, error) {
-	form := regexp.MustCompile(`^(\d+)[dD](\d*[1-9]\d*)([+-]\d+)?$`)
+	matches := regexp.MustCompile(`^(\d+)[dD](\d*[1-9]\d*)([+-]\d+)?$`).FindStringSubmatch(d)
 
-	if !form.MatchString(d) {
+	if matches == nil {
 		return nil, fmt.Errorf("dString: %v is malformed", d)
 	}
 
 	// drop the leading element, which is the full match
-	matches := form.FindStringSubmatch(d)[1:]
+	matches = matches[1:]
 
 	// if the modifier is not included, then its submatch will be empty
 	// this discards it from the slice
