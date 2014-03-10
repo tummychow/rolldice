@@ -23,13 +23,12 @@ func roll(n, d int) []int {
 // dString converts a string of the form "3d6+2" or similar into three strings,
 // for the three numbers therein. The regex used will also match "3d6", "3D6",
 // "3D6-12", etc.
-// If the string does not match the expected form, a non-nil error will be
-// returned.
-func dString(d string) ([]string, error) {
+// If the string does not match the expected form, nil is returned.
+func dString(d string) []string {
 	matches := regexp.MustCompile(`^(\d+)[dD](\d*[1-9]\d*)([+-]\d+)?$`).FindStringSubmatch(d)
 
 	if matches == nil {
-		return nil, fmt.Errorf("dString: %v is malformed", d)
+		return nil
 	}
 
 	// drop the leading element, which is the full match
@@ -41,7 +40,7 @@ func dString(d string) ([]string, error) {
 		matches = matches[:2]
 	}
 
-	return matches, nil
+	return matches
 }
 
 func main() {
@@ -90,8 +89,8 @@ GLOBAL OPTIONS:
 		// then replace the command line args with the parsed form of that
 		// d-string
 		if len(c.Args()) == 1 {
-			matches, err := dString(c.Args()[0])
-			if err != nil {
+			matches := dString(c.Args()[0])
+			if matches == nil {
 				println("dice string is malformed")
 				os.Exit(1)
 			}
