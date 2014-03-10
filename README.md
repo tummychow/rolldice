@@ -1,4 +1,4 @@
-# rolldice
+# rolldice [![travis](https://travis-ci.org/tummychow/rolldice.png)](https://travis-ci.org/tummychow/rolldice)
 
 A simple program, in Go, that rolls some dice. Yes, I know it's trivial. I wrote it to get some practice with the language.
 
