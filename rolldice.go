@@ -25,7 +25,7 @@ func roll(n, d int) []int {
 // "3D6-12", etc.
 // If the string does not match the expected form, nil is returned.
 func dString(d string) []string {
-	matches := regexp.MustCompile(`^(\d+)[dD](\d*[1-9]\d*)([+-]\d+)?$`).FindStringSubmatch(d)
+	matches := regexp.MustCompile(`^(\+?\d+)[dD](\+?\d*[1-9]\d*)([+-]\d+)?$`).FindStringSubmatch(d)
 
 	if matches == nil {
 		return nil
@@ -47,7 +47,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "rolldice"
 	app.Usage = "it rolls dice"
-	app.Version = "1.3.0"
+	app.Version = "1.3.1"
 
 	// tweaked help text to be structurally similar to cli.go defaults,
 	// but more informative for this application
