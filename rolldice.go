@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/codegangsta/cli"
 	"math/rand"
 	"os"
 	"strconv"
@@ -19,51 +20,74 @@ func roll(n, d int) []int {
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	app := cli.NewApp()
+	app.Name = "rolldice"
+	app.Usage = "it rolls dice"
+	app.Version = "1.1.0"
 
-	if len(os.Args) < 3 {
-		println("  Usage:")
-		println("      rolldice <num> <faces> [modifier]")
-		println("  Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].\n")
+	// tweaked help text to be structurally similar to cli.go defaults,
+	// but more informative for this application
+	cli.AppHelpTemplate = `NAME:
+   {{.Name}} - {{.Usage}}
 
-		println("  If [modifier] is not given, the dice are printed, one per line.")
-		println("  If [modifier] is given, the sum of all the dice, plus the modifier, is")
-		println("  printed. The individual rolls will not be printed.\n")
+USAGE:
+   {{.Name}} <num> <faces> [modifier] [global options]
 
-		println("  <num> must be a non-negative integer. <faces> must be a positive integer.")
-		println("  [modifier] must be an integer (can be any sign, or zero).")
+   Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].
 
-		os.Exit(1)
-	}
+   If [modifier] is not given, the dice are printed, one per line.
+   If [modifier] is given, the sum of all the dice, plus the modifier, is
+   printed. The individual rolls will not be printed.
 
-	n, err := strconv.Atoi(os.Args[1])
-	if err != nil || n < 0 {
-		println("<num> must be non-negative integer")
-		os.Exit(1)
-	}
+   <num> must be a non-negative integer. <faces> must be a positive integer.
+   [modifier] must be an integer (can be any sign, or zero).
 
-	f, err := strconv.Atoi(os.Args[2])
-	if err != nil || f <= 0 {
-		println("<faces> must be positive integer")
-		os.Exit(1)
-	}
+VERSION:
+   {{.Version}}
 
-	dice := roll(n, f)
+GLOBAL OPTIONS:
+   {{range .Flags}}{{.}}
+   {{end}}
+`
 
-	if len(os.Args) > 3 {
-		s, err := strconv.Atoi(os.Args[3])
-		if err != nil {
-			println("[modifier] must be integer")
+	app.Action = func(c *cli.Context) {
+		if len(c.Args()) < 2 {
+			cli.ShowAppHelp(c)
 			os.Exit(1)
 		}
 
-		for _, die := range dice {
-			s += die
+		n, err := strconv.Atoi(c.Args()[0])
+		if err != nil || n < 0 {
+			println("<num> must be non-negative integer")
+			os.Exit(1)
 		}
-		fmt.Println(s)
-	} else {
-		for _, die := range dice {
-			fmt.Println(die)
+
+		f, err := strconv.Atoi(c.Args()[1])
+		if err != nil || f <= 0 {
+			println("<faces> must be positive integer")
+			os.Exit(1)
+		}
+
+		rand.Seed(time.Now().UnixNano())
+		dice := roll(n, f)
+
+		if len(c.Args()) > 2 {
+			s, err := strconv.Atoi(c.Args()[2])
+			if err != nil {
+				println("[modifier] must be integer")
+				os.Exit(1)
+			}
+
+			for _, die := range dice {
+				s += die
+			}
+			fmt.Println(s)
+		} else {
+			for _, die := range dice {
+				fmt.Println(die)
+			}
 		}
 	}
+
+	app.Run(os.Args)
 }
