@@ -91,7 +91,7 @@ GLOBAL OPTIONS:
 		if len(c.Args()) == 1 {
 			matches := dString(c.Args()[0])
 			if matches == nil {
-				println("dice string is malformed")
+				fmt.Println("dice string is malformed:", c.Args()[0])
 				os.Exit(1)
 			}
 			diceArgs = matches
@@ -103,12 +103,12 @@ GLOBAL OPTIONS:
 		// parse num and faces from the args
 		n, err := strconv.Atoi(diceArgs[0])
 		if err != nil || n < 0 {
-			println("<num> must be non-negative integer")
+			fmt.Println("<num> must be non-negative integer:", diceArgs[0])
 			os.Exit(1)
 		}
 		f, err := strconv.Atoi(diceArgs[1])
 		if err != nil || f <= 0 {
-			println("<faces> must be positive integer")
+			fmt.Println("<faces> must be positive integer:", diceArgs[1])
 			os.Exit(1)
 		}
 
@@ -125,7 +125,7 @@ GLOBAL OPTIONS:
 			// sum-style output - first parse modifier
 			s, err := strconv.Atoi(diceArgs[2])
 			if err != nil {
-				println("[modifier] must be integer")
+				fmt.Println("[modifier] must be integer:", diceArgs[2])
 				os.Exit(1)
 			}
 
