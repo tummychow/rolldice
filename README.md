@@ -19,6 +19,18 @@ If the `-s` flag is given, then `seed` will be used as the seed for [the Go PRNG
 
 I don't know if the PRNG implementation is platform-specific, so maybe the output will differ from platform to platform. However, if two invocations with the same seed on the same platform give different results, that is a bug. Please open an issue.
 
+### d-style input
+Instead of specifying `num`, `faces` and `modifier` as numbers on the command line, you can specify them all in one string, using a notation that is common in many games. An example is worth a hundred words:
+```
+$ rolldice 3d6+0
+8
+$ rolldice 3d6
+2
+5
+4
+```
+The invocation `rolldice 3d6+0` is equivalent to the invocation `rolldice 3 6 +0`. Similarly, `rolldice 3d6` is equivalent to `rolldice 3 6`. The `d` is not case sensitive, so `3d6` and `3D6` are both acceptable. Negative modifiers can obviously be specified with a minus sign. `rolldice 2d4-2` is equivalent to `rolldice 2 4 -2`.
+
 ### Examples
 ```
 $ rolldice 3 6
@@ -55,7 +67,6 @@ $ rolldice -s 1 2 6
 ---
 
 ## Todo
-- Add parsing for d-style input, eg `rolldice 3d6` to roll three six-sided dice, or `rolldice 3d6+2` to roll three six-sided dice and then add 2 to their sum.
 - Add a flag to print the individual rolls when the modifier is specified, so you can see both the dice and their sum. Great if you're too lazy to add numbers, like yours truly!
 
 ## Contributing

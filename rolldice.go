@@ -5,6 +5,7 @@ import (
 	"github.com/codegangsta/cli"
 	"math/rand"
 	"os"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -19,11 +20,35 @@ func roll(n, d int) []int {
 	return dice
 }
 
+// dString converts a string of the form "3d6+2" or similar into three strings,
+// for the three numbers therein. The regex used will also match "3d6", "3D6",
+// "3D6-12", etc.
+// If the string does not match the expected form, a non-nil error will be
+// returned.
+func dString(d string) ([]string, error) {
+	form := regexp.MustCompile(`^(\d+)[dD](\d*[1-9]\d*)([+-]\d+)?$`)
+
+	if !form.MatchString(d) {
+		return nil, fmt.Errorf("dString: %v is malformed", d)
+	}
+
+	// drop the leading element, which is the full match
+	matches := form.FindStringSubmatch(d)[1:]
+
+	// if the modifier is not included, then its submatch will be empty
+	// this discards it from the slice
+	if matches[2] == "" {
+		matches = matches[:2]
+	}
+
+	return matches, nil
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "rolldice"
 	app.Usage = "it rolls dice"
-	app.Version = "1.2.0"
+	app.Version = "1.3.0"
 
 	// tweaked help text to be structurally similar to cli.go defaults,
 	// but more informative for this application
@@ -38,6 +63,9 @@ USAGE:
    If [modifier] is not given, the dice are printed, one per line.
    If [modifier] is given, the sum of all the dice, plus the modifier, is
    printed. The individual rolls will not be printed.
+
+   <num>, <faces> and [modifier] can also be specified in one string, such as
+   "3d6" or "2D4-2".
 
    <num> must be a non-negative integer. <faces> must be a positive integer.
    [modifier] must be an integer (can be any sign, or zero).
@@ -55,34 +83,48 @@ GLOBAL OPTIONS:
 	}
 
 	app.Action = func(c *cli.Context) {
-		if len(c.Args()) < 2 {
+		// by default, derive input from command line args
+		diceArgs := c.Args()
+
+		// but if the command line args take the form of a d-style input,
+		// then replace the command line args with the parsed form of that
+		// d-string
+		if len(c.Args()) == 1 {
+			matches, err := dString(c.Args()[0])
+			if err != nil {
+				println("dice string is malformed")
+				os.Exit(1)
+			}
+			diceArgs = matches
+		} else if len(c.Args()) < 2 {
 			cli.ShowAppHelp(c)
 			os.Exit(1)
 		}
 
-		n, err := strconv.Atoi(c.Args()[0])
+		// parse num and faces from the args
+		n, err := strconv.Atoi(diceArgs[0])
 		if err != nil || n < 0 {
 			println("<num> must be non-negative integer")
 			os.Exit(1)
 		}
-
-		f, err := strconv.Atoi(c.Args()[1])
+		f, err := strconv.Atoi(diceArgs[1])
 		if err != nil || f <= 0 {
 			println("<faces> must be positive integer")
 			os.Exit(1)
 		}
 
+		// generate dice
 		seed := int64(c.GlobalInt("seed"))
 		if seed <= 0 {
 			// default seed: current time
 			seed = time.Now().UnixNano()
 		}
 		rand.Seed(seed)
-
 		dice := roll(n, f)
 
-		if len(c.Args()) > 2 {
-			s, err := strconv.Atoi(c.Args()[2])
+		if len(diceArgs) > 2 {
+			// sum-style output - first parse modifier
+			s, err := strconv.Atoi(diceArgs[2])
 			if err != nil {
 				println("[modifier] must be integer")
 				os.Exit(1)
@@ -93,6 +135,7 @@ GLOBAL OPTIONS:
 			}
 			fmt.Println(s)
 		} else {
+			// die-by-die output
 			for _, die := range dice {
 				fmt.Println(die)
 			}
