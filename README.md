@@ -2,17 +2,22 @@
 
 A simple program, in Go, that rolls some dice. Yes, I know it's trivial. I wrote it to get some practice with the language.
 
-As of v1.1.0, rolldice is based on [cli.go](http://github.com/codegangsta/cli). It's a pretty lightweight solution for these kinds of programs. Probably the only thing it's missing (in the context of this application) is typed arguments. Maybe I'll make a PR for it later.
+As of v1.1.0+, rolldice is based on [cli.go](http://github.com/codegangsta/cli). It's a pretty lightweight solution for these kinds of programs. Probably the only thing it's missing (in the context of this application) is typed arguments. Maybe I'll make a PR for it later.
 
 ---
 
 ## Usage
 ```
-rolldice <num> <faces> [modifier]
+rolldice [--seed|-s <seed>] <num> <faces> [modifier]
 ```
 Rolls `num` dice, where each die has `faces` (numbered starting at 1). If `modifier` is not given, all the dice will be printed, one roll per line. If `modifier` *is* given, then only the sum of the dice will be printed, plus the modifier.
 
 Run the program without any arguments, or with the `-h` flag, to see help.
+
+### Fixed seeds
+If the `-s` flag is given, then `seed` will be used as the seed for [the Go PRNG](http://golang.org/pkg/rand). You can use this flag to get repeated, predictable results. The seed must be a positive integer. If it's not specified, rolldice falls back on the default behavior, which uses the system time (therefore results will differ between uses, as expected).
+
+I don't know if the PRNG implementation is platform-specific, so maybe the output will differ from platform to platform. However, if two invocations with the same seed on the same platform give different results, that is a bug. Please open an issue.
 
 ### Examples
 ```
@@ -37,16 +42,24 @@ $ rolldice 3 6 | sort
 2
 4
 ```
+```
+# Reproducible rolls with -s
+$ rolldice -s 1 2 6
+6
+4
+$ rolldice -s 1 2 6
+6
+4
+```
 
 ---
 
 ## Todo
 - Add parsing for d-style input, eg `rolldice 3d6` to roll three six-sided dice, or `rolldice 3d6+2` to roll three six-sided dice and then add 2 to their sum.
-- Add a flag to set the seed, eg `rolldice 3 6 --seed 1`, to fix the PRNG to a specific seed. Makes it easier to test the program and get reproducible results.
 - Add a flag to print the individual rolls when the modifier is specified, so you can see both the dice and their sum. Great if you're too lazy to add numbers, like yours truly!
 
 ## Contributing
-Pull requests welcome! Making trivial programs is a good way to get started with a language, hacking on trivial programs is another good way.
+Pull requests welcome! Making trivial programs is a good way to get started with a language, hacking on trivial programs is another good way. Issues are also welcome, if you find a bug but aren't familiar with the Go language.
 
 ## License
 MIT, see [LICENSE.md](LICENSE.md).

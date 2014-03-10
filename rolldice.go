@@ -23,7 +23,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "rolldice"
 	app.Usage = "it rolls dice"
-	app.Version = "1.1.0"
+	app.Version = "1.2.0"
 
 	// tweaked help text to be structurally similar to cli.go defaults,
 	// but more informative for this application
@@ -31,7 +31,7 @@ func main() {
    {{.Name}} - {{.Usage}}
 
 USAGE:
-   {{.Name}} <num> <faces> [modifier] [global options]
+   {{.Name}} [global options] <num> <faces> [modifier]
 
    Rolls <num> dice, each with <faces> number of faces in range [1, <faces>].
 
@@ -49,6 +49,10 @@ GLOBAL OPTIONS:
    {{range .Flags}}{{.}}
    {{end}}
 `
+
+	app.Flags = []cli.Flag{
+		cli.IntFlag{"seed, s", 0, "set the seed for the PRNG"},
+	}
 
 	app.Action = func(c *cli.Context) {
 		if len(c.Args()) < 2 {
@@ -68,7 +72,13 @@ GLOBAL OPTIONS:
 			os.Exit(1)
 		}
 
-		rand.Seed(time.Now().UnixNano())
+		seed := int64(c.GlobalInt("seed"))
+		if seed <= 0 {
+			// default seed: current time
+			seed = time.Now().UnixNano()
+		}
+		rand.Seed(seed)
+
 		dice := roll(n, f)
 
 		if len(c.Args()) > 2 {
