@@ -63,6 +63,15 @@ $ rolldice -s 1 2 6
 6
 4
 ```
+```
+# Unique rolls with -u
+$ rolldice -u 3 3
+1
+3
+2
+$ rolldice -u 4 3
+<num> must be <= <faces> when using unique rolls: 4 3
+```
 
 ---
 

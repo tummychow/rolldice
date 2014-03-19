@@ -70,7 +70,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "rolldice"
 	app.Usage = "it rolls dice"
-	app.Version = "1.3.1"
+	app.Version = "1.4.0"
 
 	// tweaked help text to be structurally similar to cli.go defaults,
 	// but more informative for this application
@@ -102,6 +102,7 @@ GLOBAL OPTIONS:
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{"seed, s", 0, "set the seed for the PRNG"},
+		cli.BoolFlag{"unique, u", "require unique rolls"},
 	}
 
 	app.Action = func(c *cli.Context) {
@@ -135,14 +136,25 @@ GLOBAL OPTIONS:
 			os.Exit(1)
 		}
 
-		// generate dice
+		// load seed
 		seed := int64(c.GlobalInt("seed"))
 		if seed <= 0 {
 			// default seed: current time
 			seed = time.Now().UnixNano()
 		}
 		rand.Seed(seed)
-		dice := roll(n, f)
+
+		// generate dice
+		var dice []int
+		if !c.GlobalBool("unique") {
+			dice = roll(n, f)
+		} else {
+			if n > f {
+				fmt.Println("<num> must be <= <faces> when using unique rolls:", n, f)
+				os.Exit(1)
+			}
+			dice = rollUnique(n, f)
+		}
 
 		if len(diceArgs) > 2 {
 			// sum-style output - first parse modifier
