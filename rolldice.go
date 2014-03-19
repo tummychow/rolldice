@@ -146,14 +146,14 @@ GLOBAL OPTIONS:
 
 		// generate dice
 		var dice []int
-		if !c.GlobalBool("unique") {
-			dice = roll(n, f)
-		} else {
+		if c.GlobalBool("unique") {
 			if n > f {
 				fmt.Println("<num> must be <= <faces> when using unique rolls:", n, f)
 				os.Exit(1)
 			}
 			dice = rollUnique(n, f)
+		} else {
+			dice = roll(n, f)
 		}
 
 		if len(diceArgs) > 2 {
