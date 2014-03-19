@@ -10,29 +10,29 @@ import (
 	"time"
 )
 
-// roll rolls n dice with faces in the range [1,d], and returns
+// roll rolls n dice with faces in the range [1,f], and returns
 // their values in the order they were rolled.
-func roll(n, d int) []int {
+func roll(n, f int) []int {
 	dice := make([]int, n)
 	for i := range dice {
-		dice[i] = rand.Intn(d) + 1
+		dice[i] = rand.Intn(f) + 1
 	}
 	return dice
 }
 
-// rollUnique rolls n dice with faces in the range [1,d], such that no
+// rollUnique rolls n dice with faces in the range [1,f], such that no
 // two dice have the same roll, and returns their values in the order
-// they were rolled. Since the rolls must be unique, it is required that n<=d.
-func rollUnique(n, d int) []int {
+// they were rolled. Since the rolls must be unique, it is required that n<=f.
+func rollUnique(n, f int) []int {
 	// load array with all possible faces, 1,2,3,4... etc
-	dice := make([]int, d)
+	dice := make([]int, f)
 	for i := range dice {
 		dice[i] = i + 1
 	}
 
 	// durstenfeld/knuth/fisher-yates shuffle
 	// we only need n numbers, so we don't need the full number of iterations
-	for i := d - 1; i > d-n; i-- {
+	for i := f - 1; i > f-n; i-- {
 		j := rand.Intn(i + 1)
 		temp := dice[i]
 		dice[i] = dice[j]
@@ -40,7 +40,7 @@ func rollUnique(n, d int) []int {
 	}
 
 	// the numbers at the end of the array are the shuffled ones
-	return dice[d-n:]
+	return dice[f-n:]
 }
 
 // dString converts a string of the form "3d6+2" or similar into three strings,
