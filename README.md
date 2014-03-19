@@ -8,7 +8,7 @@ As of v1.1.0+, rolldice is based on [cli.go](http://github.com/codegangsta/cli).
 
 ## Usage
 ```
-rolldice [--seed|-s <seed>] <num> <faces> [modifier]
+rolldice [OPTIONS] <num> <faces> [modifier]
 ```
 Rolls `num` dice, where each die has `faces` (numbered starting at 1). If `modifier` is not given, all the dice will be printed, one roll per line. If `modifier` *is* given, then only the sum of the dice will be printed, plus the modifier.
 
