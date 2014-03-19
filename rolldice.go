@@ -22,7 +22,7 @@ func roll(n, d int) []int {
 
 // rollUnique rolls n dice with faces in the range [1,d], such that no
 // two dice have the same roll, and returns their values in the order
-// they were rolled.
+// they were rolled. Since the rolls must be unique, it is required that n<=d.
 func rollUnique(n, d int) []int {
 	// load array with all possible faces, 1,2,3,4... etc
 	dice := make([]int, d)
@@ -31,14 +31,16 @@ func rollUnique(n, d int) []int {
 	}
 
 	// durstenfeld/knuth/fisher-yates shuffle
-	for i := d - 1; i > 0; i-- {
+	// we only need n numbers, so we don't need the full number of iterations
+	for i := d - 1; i > d-n; i-- {
 		j := rand.Intn(i + 1)
 		temp := dice[i]
 		dice[i] = dice[j]
 		dice[j] = temp
 	}
 
-	return dice[:n]
+	// the numbers at the end of the array are the shuffled ones
+	return dice[d-n:]
 }
 
 // dString converts a string of the form "3d6+2" or similar into three strings,
